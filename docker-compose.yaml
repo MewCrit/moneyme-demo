@@ -1,0 +1,52 @@
+version: '3.8'
+services: 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-18.04
+    ports:
+      - 1433:1433
+    environment: 
+      SA_PASSWORD: "!_Abc1234567*"
+      ACCEPT_EULA: "Y"
+    networks:
+      - moneyme-net
+    volumes:
+      - ./backend/db:/scripts/
+    command:
+      - /bin/bash
+      - -c 
+      - |
+        /opt/mssql/bin/sqlservr &
+        sleep 30
+        for foo in /scripts/*.sql
+        do /opt/mssql-tools/bin/sqlcmd -U sa -P $$SA_PASSWORD -l 30 -e -i $$foo
+        done
+        sleep infinity
+
+  money-me-api:
+    image: moneyme-api:latest
+    ports:
+      - "7170:7170"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:7170"
+      CONNECTION_STRING: "Server=mssql;Database=MoneyMe;User Id=sa;Password=!_Abc1234567*;TrustServerCertificate=True;"
+    depends_on:
+      - mssql
+    networks:
+      - moneyme-net
+
+  moneyme-app:
+    image: moneyme-app:latest
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_MONEYME_URL: "http://money-me-api:7170"
+    networks:
+      - moneyme-net
+    depends_on:
+      - money-me-api
+
+networks:
+  moneyme-net:
+    driver: bridge
+    name: moneyme-net

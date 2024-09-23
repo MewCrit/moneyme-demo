@@ -1,0 +1,38 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+          "build",
+          "${workspaceFolder}/MoneyMe.API.csproj"
+        ],
+        "problemMatcher": "$msCompile",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "detail": "Build the .NET project"
+      },
+      {
+        "label": "publish",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+          "publish",
+          "${workspaceFolder}/MoneyMe.API.csproj",
+          "-c",
+          "Release",
+          "-o",
+          "${workspaceFolder}/publish"
+        ],
+        "problemMatcher": "$msCompile",
+        "group": "none",
+        "detail": "Publish the .NET project"
+      }
+    ]
+  }
+  
