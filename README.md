@@ -24,6 +24,7 @@ Running it Automatically only requires Docker
         ./init.ps1
     ```
 
+   Open the app at http://localhost:3000
 
 ## Run Manually
 
